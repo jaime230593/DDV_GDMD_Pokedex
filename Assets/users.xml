@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<XMLPokedexDatos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Users>
+    <user>
+      <nombre>Jaime</nombre>
+      <opciones>
+        <opcion>gen1</opcion>
+        <opcion>gen3</opcion>
+      </opciones>
+    </user>
+    <user>
+      <nombre>Tom</nombre>
+      <opciones>
+        <opcion>gen2</opcion>
+      </opciones>
+    </user>
+  </Users>
+</XMLPokedexDatos>
