@@ -35,7 +35,15 @@ public class ConexionMongoDB {
 
 	//Borra los archivos que tiene MongoDB y sube las imagenes de los pokemon
 	public static void CargarImagenesPokemon(){
-
+		//Eliminamos las que habia
+		database.GridFS.Files.Drop();
+		database.GridFS.Chunks.Drop();
+		string ruta = "Assets/pokemon/";
+		using(var file = File.OpenRead(ruta+"1.png"))
+		{
+			database.GridFS.Upload(file, "1.png");
+		}
+		
 	}
 
 	public static Texture2D LoadTexture(Image imagen, string FilePath) {

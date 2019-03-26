@@ -32,6 +32,7 @@ public class Pokedex : MonoBehaviour {
 		}
 		//Debug.Log(t);
 
+		ConexionMongoDB.CargarImagenesPokemon();
 		ConexionMongoDB.LoadTexture(imagen, "1.png");
 
 		//XML
