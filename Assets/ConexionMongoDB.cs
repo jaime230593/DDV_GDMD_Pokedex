@@ -26,56 +26,67 @@ public class ConexionMongoDB {
 		pokemoncollection = database.GetCollection<BsonDocument>("pokemon");
 
 		Debug.Log ("Conectado a la base de datos de MongoDB");
-
-		/*Debug.Log("Buscando 'Bulbasaur'");
-		foreach (var document in pokemoncollection.Find(new QueryDocument("name", "Bulbasaur"))){
-			ImprimirPokemonBase(document);
-		}*/
 	}
 
 	//Borra los archivos que tiene MongoDB y sube las imagenes de los pokemon
 	public static void CargarImagenesPokemon(){
-		//Eliminamos las que habia
+		//Eliminamos los archivos que habia antes
 		database.GridFS.Files.Drop();
 		database.GridFS.Chunks.Drop();
+
 		string ruta = "Assets/pokemon/";
-		using(var file = File.OpenRead(ruta+"1.png"))
+
+		foreach (string n in Directory.GetFiles(ruta))
 		{
-			database.GridFS.Upload(file, "1.png");
+			//.meta lo usa unity, no queremos meterlos
+			if (!n.Contains(".meta")){
+				using(FileStream file = File.OpenRead(n))
+				{
+					//Metemos en GRIDFS los archivos con su nombre
+					database.GridFS.Upload(file, n.Split('/')[2]);
+				}
+			}
 		}
-		
 	}
 
-	public static Texture2D LoadTexture(Image imagen, string FilePath) {
- 
-		// Load a PNG or JPG file from disk to a Texture2D
-		// Returns null if load fails
-	
-		//Texture2D Tex2D;
-		//byte[] FileData;
+	public static Sprite LoadTexture(string FilePath) { 
+		BsonValue id = database.GridFS.Files.FindOne(Query.EQ("filename",FilePath))["_id"];
 
-		string id = database.GridFS.Files.FindOne(Query.EQ("filename",FilePath))["_id"].ToString();
+		//Debug.Log(id);
+		//Debug.Log(database.GridFS.Chunks.FindOne(Query.EQ("files_id",database.GridFS.Files.FindOne(Query.EQ("filename",FilePath))["_id"])).ToJson());
 
-		Debug.Log(id);
-		Debug.Log(database.GridFS.Chunks.FindOne(Query.EQ("files_id",database.GridFS.Files.FindOne(Query.EQ("filename",FilePath))["_id"])).ToJson());
-
-		BsonDocument temp = database.GridFS.Chunks.FindOne(Query.EQ("files_id",database.GridFS.Files.FindOne(Query.EQ("filename",FilePath))["_id"]));
+		BsonDocument temp = database.GridFS.Chunks.FindOne(Query.EQ("files_id", id));
 
 		Texture2D tex = new Texture2D(2,2);
 		tex.LoadImage(temp["data"].AsByteArray);
 
-		imagen.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width,tex.height), new Vector2(0, 0));
+		return Sprite.Create(tex, new Rect(0, 0, tex.width,tex.height), new Vector2(0, 0));
+	}
 
-		return null;
-	
-		/* if (File.Exists(FilePath)){
-		FileData = File.ReadAllBytes(FilePath);
-		Tex2D = new Texture2D(2, 2);           // Create new "empty" texture
-		if (Tex2D.LoadImage(FileData))           // Load the imagedata into the texture (size is set automatically)
-			return Tex2D;                 // If data = readable -> return texture
-		}  
-		return null;                     // Return null if load failed
-		*/
+	public static List<string> BuscarMegaEvoluciones(int pokedex_number){
+		List<string> s = new List<string>();
+		BsonDocument t = database.GridFS.Files.FindOne(Query.EQ("filename",pokedex_number.ToString()+"-mega.png"));
+		if (t != null){
+			//Debug.Log("Mega "+t["_id"].ToString());
+			s.Add(t["filename"].ToString());
+		}
+		t = database.GridFS.Files.FindOne(Query.EQ("filename",pokedex_number.ToString()+"-mega-x.png"));
+		if (t != null){
+			//Debug.Log("Mega x "+t["_id"].ToString());
+			s.Add(t["filename"].ToString());
+		}
+		t = database.GridFS.Files.FindOne(Query.EQ("filename",pokedex_number.ToString()+"-mega-y.png"));
+		if (t != null){
+			//Debug.Log("Mega y "+t["_id"].ToString());
+			s.Add(t["filename"].ToString());
+		}
+		t = database.GridFS.Files.FindOne(Query.EQ("filename",pokedex_number.ToString()+"-primal.png"));
+		if (t != null){
+			//Debug.Log("Mega y "+t["_id"].ToString());
+			s.Add(t["filename"].ToString());
+		}
+
+		return s;
 	}
 
 	static void InsertarPokemon(){
@@ -94,14 +105,7 @@ public class ConexionMongoDB {
 	static List<Pokemon> SacarPokemons(MongoCursor<BsonDocument> datos){
 		List<Pokemon> pokemons = new List<Pokemon>();
 		foreach (BsonDocument document in datos){
-			pokemons.Add(new Pokemon(
-				document["pokedex_number"].AsInt32,
-				document["name"].AsString,
-				document["generation"].AsInt32,
-				document["is_legendary"].AsInt32,
-				document["type1"].AsString,
-				document["type2"].AsString
-			));
+			pokemons.Add(FormarPokemon(document));
 		}
 
 		return pokemons;
@@ -114,6 +118,27 @@ public class ConexionMongoDB {
 				pokemons.Add(p);
 			}
 		}
+	}
+
+	static Pokemon FormarPokemon(BsonDocument document){
+		Pokemon p = new Pokemon(
+			document["pokedex_number"].AsInt32,
+			document["name"].AsString,
+			document["generation"].AsInt32,
+			document["is_legendary"].AsInt32,
+			document["type1"].AsString,
+			document["type2"].AsString,
+			BuscarMegaEvoluciones(document["pokedex_number"].AsInt32)
+		);
+		return p;
+	}
+
+	public static Pokemon BuscarPokemon(int pokedex_number){
+		Pokemon p = null;
+		foreach (BsonDocument document in pokemoncollection.Find(new QueryDocument("pokedex_number", pokedex_number))){
+			p = FormarPokemon(document);
+		}
+		return p;
 	}
 
 	public static List<Pokemon> BuscarPorTipos(string[] tipos){
