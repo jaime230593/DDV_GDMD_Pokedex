@@ -13,14 +13,15 @@ using UnityEngine.UI;
 
 public class ConexionMongoDB {
 
+	static string pathMongoDB = "mongodb://localhost:27017";
 	static MongoClient client;
 	static MongoServer server;
 	static MongoDatabase database;
 	static MongoCollection<BsonDocument> pokemoncollection;
 
 	//Para conectar con la base de datos de MongoDB
-	public static void Conectar(string conexion){
-		client = new MongoClient(conexion);
+	public static void Conectar(){
+		client = new MongoClient(pathMongoDB);
 		server = client.GetServer();
 		database = server.GetDatabase("pokedex");
 		pokemoncollection = database.GetCollection<BsonDocument>("pokemon");

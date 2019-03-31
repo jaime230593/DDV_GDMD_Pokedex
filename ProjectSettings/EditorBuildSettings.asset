@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Main.unity
+    guid: 2b26de3c7e622ea43ba121e093917b3c
+  - enabled: 1
+    path: Assets/Pokedex.unity
+    guid: adeaae90f48a7d54c913d46450841a29
   m_configObjects: {}

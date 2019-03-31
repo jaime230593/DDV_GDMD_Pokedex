@@ -4,30 +4,34 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Pokedex : MonoBehaviour {
-
-	public int pokemonACargar = 1;
-
-	string pathXML = "Assets/users.xml";
-	string pathMongoDB = "mongodb://localhost:27017";
+	Permanente permanente;
 
 	public bool recargarImagenes = false;
 	public Image imagen,imagen_mega,imagen_mega2;
 	public Text texto,texto_mega1,texto_mega2;
+	public Text texto_usuario;
+	public Pokemon pokemonCargado = null;
 
 	void Start () {
+		permanente = GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>();
+		texto_usuario.text = "Usuario: "+permanente.user.nombre;
+
 		//MongoDB
-		ConexionMongoDB.Conectar(pathMongoDB);
+		ConexionMongoDB.Conectar();
 
 		if (recargarImagenes){
 			ConexionMongoDB.CargarImagenesPokemon();
 		}
 
-		Pokemon temp = ConexionMongoDB.BuscarPokemon(pokemonACargar);
+		int pok = 1;
 
-		Debug.Log(temp);
+		if (permanente.user.pokemonACargar != null){
+			pok = int.Parse(permanente.user.pokemonACargar);
+		}
 
+		Pokemon temp = ConexionMongoDB.BuscarPokemon(pok);
 		CargarPokemon(temp);
-		
+		Debug.Log(temp);
 
 		string t = "";
 		foreach (Pokemon p in ConexionMongoDB.BuscarPorGeneracion(new int[]{1,3})){
@@ -48,7 +52,7 @@ public class Pokedex : MonoBehaviour {
 		//Debug.Log(t);
 
 		//XML
-		User jaime = new User();
+		/*User jaime = new User();
         jaime.nombre = "Jaime";
 		jaime.opciones = new string[]{"gen1","gen3"};
 		User tom = new User();
@@ -61,7 +65,7 @@ public class Pokedex : MonoBehaviour {
 		XML.GuardarXML(datos,pathXML);
 
 		XMLPokedexDatos datosXML = XML.CargarXML<XMLPokedexDatos>(pathXML);
-        Debug.Log(datosXML.ToString());
+        Debug.Log(datosXML.ToString());*/
 	}
 	
 	// Update is called once per frame
@@ -69,7 +73,27 @@ public class Pokedex : MonoBehaviour {
 		
 	}
 
+	public void CargarSiguientePokemon(){
+		int n = pokemonCargado.numero+1;
+		if (n>=721){
+			n=721;
+		}
+		Pokemon temp = ConexionMongoDB.BuscarPokemon(n);
+		CargarPokemon(temp);
+	}
+
+	public void CargarAnteriorPokemon(){
+		int n = pokemonCargado.numero-1;
+		if (n<=0){
+			n=0;
+		}
+		Pokemon temp = ConexionMongoDB.BuscarPokemon(n);
+		CargarPokemon(temp);
+	}
+
 	void CargarPokemon(Pokemon p){
+		pokemonCargado = p;
+		permanente.ActualizarPokemonUsuario(p);
 		texto.text = p.nombre;
 		imagen.sprite = ConexionMongoDB.LoadTexture(p.numero.ToString()+".png");
 		List<string> megas = new List<string>();
