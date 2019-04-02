@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class CargadorPokedex : MonoBehaviour {
 
 	public Text texto, place;
+	public string escena;
 
 	// Use this for initialization
 	void Start () {
@@ -45,7 +46,7 @@ public class CargadorPokedex : MonoBehaviour {
 			XML.GuardarXML(temp, XML.pathXML);
 
 			GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().CargarUsuario(nuevo);
-			SceneManager.LoadScene("Pokedex", LoadSceneMode.Single);
+			SceneManager.LoadScene(escena, LoadSceneMode.Single);
 		}else{
 			place.text = "Debes usar un nombre de usuario...";
 		}

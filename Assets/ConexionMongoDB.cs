@@ -50,7 +50,8 @@ public class ConexionMongoDB {
 		}
 	}
 
-	public static Sprite LoadTexture(string FilePath) { 
+	public static Sprite LoadTexture(string FilePath) {
+		//Debug.Log(FilePath);
 		BsonValue id = database.GridFS.Files.FindOne(Query.EQ("filename",FilePath))["_id"];
 
 		//Debug.Log(id);
@@ -102,6 +103,16 @@ public class ConexionMongoDB {
 
 	}
 
+	public static List<Pokemon> CogerPokemons(){
+		List<Pokemon> pokemons = new List<Pokemon>();
+		foreach (BsonDocument document in pokemoncollection.FindAll()){
+			pokemons.Add(FormarPokemon(document));
+			
+		}
+
+		return pokemons;
+	}
+
 	//Extrae los datos de los pokemon de MongoDB y los pasa a la clase Pokemon, y devuelve la lista
 	static List<Pokemon> SacarPokemons(MongoCursor<BsonDocument> datos){
 		List<Pokemon> pokemons = new List<Pokemon>();
@@ -129,7 +140,8 @@ public class ConexionMongoDB {
 			document["is_legendary"].AsInt32,
 			document["type1"].AsString,
 			document["type2"].AsString,
-			BuscarMegaEvoluciones(document["pokedex_number"].AsInt32)
+			BuscarMegaEvoluciones(document["pokedex_number"].AsInt32),
+			document["classfication"].AsString
 		);
 		return p;
 	}

@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Main.unity
     guid: 2b26de3c7e622ea43ba121e093917b3c
-  - enabled: 1
+  - enabled: 0
     path: Assets/Pokedex.unity
     guid: adeaae90f48a7d54c913d46450841a29
+  - enabled: 1
+    path: Assets/PokedexLista.unity
+    guid: 52b8f061acf800b49bbcd5857d9158de
   m_configObjects: {}

@@ -5,7 +5,7 @@ using UnityEngine;
 public class XML {
 
 	//public static string pathXML = Path.Combine(Application.persistentDataPath, "users.xml");
-	public static string pathXML = "Assets/users.xml";
+	public static string pathXML = "users.xml";
 
 	public static void CrearXML(){
 		FileStream fs = new FileStream(pathXML, FileMode.Create);

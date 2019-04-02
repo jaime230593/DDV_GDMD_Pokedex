@@ -19,9 +19,9 @@ public class CambiarPokemon : MonoBehaviour {
 	public void Cargar(){
 		Pokedex pokedex = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Pokedex>();
 		if (derecha){
-			pokedex.CargarSiguientePokemon();
+			//pokedex.CargarSiguientePokemon();
 		}else{
-			pokedex.CargarAnteriorPokemon();
+			//pokedex.CargarAnteriorPokemon();
 		}
     }
 }
