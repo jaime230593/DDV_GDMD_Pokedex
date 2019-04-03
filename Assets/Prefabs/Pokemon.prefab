@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 222342498906326162}
   - component: {fileID: 114376399681087238}
   - component: {fileID: 114890431755494634}
+  - component: {fileID: 114405331573531756}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -188,6 +189,23 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114405331573531756
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1995569097568026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 059f0c5f962793f4e8fe7cca3f482646, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vistaPokemon: {fileID: 0}
+  panel: {fileID: 0}
+  imagen: {fileID: 0}
+  numero: {fileID: 0}
+  nombre: {fileID: 0}
+  descripcion: {fileID: 0}
 --- !u!114 &114890431755494634
 MonoBehaviour:
   m_ObjectHideFlags: 1

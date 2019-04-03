@@ -5,17 +5,20 @@ using UnityEngine;
 public class Permanente : MonoBehaviour {
 
 	public User user;
+	//Para indicar si es la escena main, para trampear el usuario a jaime siempre si no se ejecuta desde la main
+	public bool main = false;
 
-	// Use this for initialization
-	void Start () {
-		DontDestroyOnLoad(gameObject);
+	void Awake () {
+		if (GameObject.FindGameObjectWithTag("permanente") == null){
+			Destroy(gameObject);
+		}else{
+			if (!main){
+				CargadorPokedex.Cargar("jaime");
+			}
+			DontDestroyOnLoad(gameObject);
+		}
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
 	public void CargarUsuario(User u){
 		user = u;
 	}

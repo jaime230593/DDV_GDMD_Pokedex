@@ -30,6 +30,7 @@ public class Pokemon : IEquatable<Pokemon>{
 			this.imagen = ConexionMongoDB.LoadTexture(numero.ToString()+".png");
 		}catch (Exception e){
 			this.imagen = null;
+			Debug.Log("Excepcion cargando imagen de "+numero.ToString()+": "+e.Message);
 		}
 		this.descripcion = descripcion;
 	}

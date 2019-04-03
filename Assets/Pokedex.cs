@@ -15,6 +15,10 @@ public class Pokedex : MonoBehaviour {
 	public GameObject gridPokemons;
 	public GameObject tamanioPokemon;
 
+	public GameObject vistaPokemon;
+	public Image vistaImagen;
+	public Text vistaNumero,vistaNombre,vistaDescripcion;
+
 	void Start () {
 		permanente = GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>();
 		texto_usuario.text = "Usuario: "+permanente.user.nombre;
@@ -163,6 +167,16 @@ public class Pokedex : MonoBehaviour {
 				imagenBoton.sprite = p.imagen;
 				nombre.text = p.nombre;
 				descripcion.text = p.descripcion;
+
+				BotonPokemon botonPokemon = o.transform.GetChild(0).gameObject.GetComponent<BotonPokemon>();
+				botonPokemon.pokemon = p;
+				botonPokemon.vistaPokemon = vistaPokemon;
+				botonPokemon.panel = gridPokemons.transform.parent.gameObject;
+				
+				botonPokemon.imagen = vistaImagen;
+				botonPokemon.numero = vistaNumero;
+				botonPokemon.nombre = vistaNombre;
+				botonPokemon.descripcion = vistaDescripcion;
 				
 				o.transform.SetParent(gridPokemons.transform);
 				n--;
