@@ -100,6 +100,7 @@ public class ConexionMongoDB {
 		return pokemons;
 	}
 
+	//Parametros: array de generaciones seleccionadas, tipos y si se filtra por legendario
 	public static List<Pokemon> CogerPokemons(int[] generacion, string[] tipos, bool legendario){
 		int nfiltros = 0;
 		if (generacion.Length != 0){
@@ -111,13 +112,12 @@ public class ConexionMongoDB {
 		if (legendario){
 			nfiltros += 1;
 		}
-
 		List<Pokemon> pokemons = new List<Pokemon>();
-
+		//Se usa cuando hay filtros seleccionados
 		if (nfiltros != 0){
 			string filtro = "";
 			string tmp = "";
-
+			//Inicio del JSON
 			if (nfiltros > 1){
 				filtro = "{ $and: [";
 			}
@@ -125,7 +125,6 @@ public class ConexionMongoDB {
 			if (legendario){
 				filtro += " { is_legendary: 1 },";
 			}
-
 			//generaciones
 			if (generacion.Length != 0){
 				tmp = " { $or: [ ";
@@ -139,7 +138,6 @@ public class ConexionMongoDB {
 				tmp += " ] } ";
 				filtro += tmp;
 			}
-
 			//tipos
 			if (tipos.Length != 0){
 				tmp = " { $or: [ ";
@@ -153,6 +151,7 @@ public class ConexionMongoDB {
 				tmp += " ] } ";
 				filtro += tmp;
 			}
+			//Fin del JSON
 			if (nfiltros > 1){
 				filtro += " ] } ";
 			}
@@ -160,6 +159,8 @@ public class ConexionMongoDB {
 
 			AddPokemons(pokemons, SacarPokemons(pokemoncollection.Find(new QueryDocument(BsonDocument.Parse(filtro)))));
 		}else{
+			//Se usa para coger todos los pokemons
+			//(Cuando no hay filtros seleccionados)
 			AddPokemons(pokemons, CogerPokemons());
 		}
 		

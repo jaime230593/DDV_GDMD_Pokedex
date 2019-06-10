@@ -32,9 +32,13 @@ public class BotonPokemon : MonoBehaviour {
 		japones.text = pokemon.japones;
 		if (mega1 != null && pokemon.mega.Count > 0){
 			mega1.sprite = ConexionMongoDB.LoadTexture(pokemon.mega[0]);
+		}else{
+			mega1.sprite = null;
 		}
 		if (mega2 != null && pokemon.mega.Count > 1){
 			mega2.sprite = ConexionMongoDB.LoadTexture(pokemon.mega[1]);
+		}else{
+			mega2.sprite = null;
 		}
 		
 
