@@ -141,7 +141,8 @@ public class ConexionMongoDB {
 			document["type1"].AsString,
 			document["type2"].AsString,
 			BuscarMegaEvoluciones(document["pokedex_number"].AsInt32),
-			document["classfication"].AsString
+			document["classfication"].AsString,
+			document["japanese_name"].AsString
 		);
 		return p;
 	}
@@ -165,9 +166,24 @@ public class ConexionMongoDB {
 		return pokemons;
 	}
 
-	public static List<Pokemon> BuscarPorLegendario(bool legendario){
-		Debug.Log("Buscando por legendarios '"+legendario.ToString()+"'");
+	public static List<Pokemon> BuscarPorLegendario(){
+		Debug.Log("Buscando por legendarios");
 		return SacarPokemons(pokemoncollection.Find(new QueryDocument("is_legendary",1)));
+	}
+
+	public static List<Pokemon> BuscarPorLegendarioTipos(string[] tipos){
+		List<Pokemon> pokemons = new List<Pokemon>();
+		string t = "Buscando por Legendarios y tipos primario o secundario:";
+		foreach (string tipo in tipos){
+			t+=" "+tipo;
+			AddPokemons(pokemons, SacarPokemons(pokemoncollection.Find(Query.And(
+					Query.Or(Query.EQ("type1", tipo), Query.EQ("type2", tipo)),
+					Query.EQ("is_legendary",1)
+				)
+			)));
+		}
+		Debug.Log(t);
+		return pokemons;
 	}
 
 	public static List<Pokemon> BuscarPorGeneracion(int[] gen){

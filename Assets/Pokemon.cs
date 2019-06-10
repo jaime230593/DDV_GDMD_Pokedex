@@ -14,8 +14,9 @@ public class Pokemon : IEquatable<Pokemon>{
 	public List<string> mega;
 	public Sprite imagen;
 	public string descripcion;
+	public string japones;
 
-	public Pokemon(int numero,string nombre,int generacion,int legendario,string tipo1,string tipo2,List<string> mega,string descripcion){
+	public Pokemon(int numero,string nombre,int generacion,int legendario,string tipo1,string tipo2,List<string> mega,string descripcion,string japones){
 		//Meter las megaevoluciones que tenga en una variable
 		this.numero = numero;
 		this.nombre = nombre;
@@ -33,6 +34,7 @@ public class Pokemon : IEquatable<Pokemon>{
 			Debug.Log("Excepcion cargando imagen de "+numero.ToString()+": "+e.Message);
 		}
 		this.descripcion = descripcion;
+		this.japones = japones;
 	}
 
 	override
@@ -44,6 +46,8 @@ public class Pokemon : IEquatable<Pokemon>{
 		texto+="\n\tTipo secundario: "+tipo2;
 		texto+="\n\tGeneracion: "+generacion;
 		texto+="\n\tLegendario: "+legendario;
+		texto+="\n\tDescripcion: "+descripcion;
+		texto+="\n\tJapones: "+japones;
 
 		return texto;
 	}

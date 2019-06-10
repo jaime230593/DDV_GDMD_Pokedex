@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/PokedexLista.unity
     guid: 52b8f061acf800b49bbcd5857d9158de
+  - enabled: 1
+    path: Assets/Filtros.unity
+    guid: be6ad7e1829363b4090a89cdb5eadadc
   m_configObjects: {}

@@ -5,5 +5,9 @@
       <nombre>jaime</nombre>
       <pokemonacargar>6</pokemonacargar>
     </user>
+    <user>
+      <nombre>h</nombre>
+      <pokemonacargar xsi:nil="true" />
+    </user>
   </Users>
 </XMLPokedexDatos>

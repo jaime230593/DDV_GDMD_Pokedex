@@ -217,7 +217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   texto: {fileID: 8998374}
   place: {fileID: 1042510436}
-  escena: PokedexLista
+  escena: Filtros
 --- !u!4 &448667640
 Transform:
   m_ObjectHideFlags: 0

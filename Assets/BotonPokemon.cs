@@ -9,8 +9,8 @@ public class BotonPokemon : MonoBehaviour {
 
 	public GameObject vistaPokemon;
 	public GameObject panel;
-	public Image imagen;
-	public Text numero,nombre,descripcion;
+	public Image imagen,mega1,mega2;
+	public Text numero,nombre,descripcion,tipo1,tipo2,japones;
 
 	void Start () {
 		boton = GetComponent<Button>();
@@ -27,6 +27,16 @@ public class BotonPokemon : MonoBehaviour {
 		numero.text = "Nº "+pokemon.numero.ToString();
 		nombre.text = pokemon.nombre;
 		descripcion.text = pokemon.descripcion;
+		tipo1.text = pokemon.tipo1;
+		tipo2.text = pokemon.tipo2;
+		japones.text = pokemon.japones;
+		if (mega1 != null && pokemon.mega.Count > 0){
+			mega1.sprite = ConexionMongoDB.LoadTexture(pokemon.mega[0]);
+		}
+		if (mega2 != null && pokemon.mega.Count > 1){
+			mega2.sprite = ConexionMongoDB.LoadTexture(pokemon.mega[1]);
+		}
+		
 
 		vistaPokemon.SetActive(true);
 		panel.SetActive(false);
