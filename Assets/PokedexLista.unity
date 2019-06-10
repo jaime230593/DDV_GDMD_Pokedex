@@ -352,7 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f546395a8a7c44349af1b377d12b3900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recargarImagenes: 1
+  recargarImagenes: 0
   texto_usuario: {fileID: 126576401}
   prefabPokemon: {fileID: 1353159501916126, guid: e9cb2e36d73f777469d67b4910b7993d,
     type: 2}

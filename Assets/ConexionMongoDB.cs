@@ -91,25 +91,78 @@ public class ConexionMongoDB {
 		return s;
 	}
 
-	static void InsertarPokemon(){
-
-	}
-
-	static void EliminarPokemon(){
-
-	}
-
-	static void MostrarImagenesDelPokemon(){
-
-	}
-
 	public static List<Pokemon> CogerPokemons(){
 		List<Pokemon> pokemons = new List<Pokemon>();
 		foreach (BsonDocument document in pokemoncollection.FindAll()){
 			pokemons.Add(FormarPokemon(document));
-			
 		}
 
+		return pokemons;
+	}
+
+	public static List<Pokemon> CogerPokemons(int[] generacion, string[] tipos, bool legendario){
+		int nfiltros = 0;
+		if (generacion.Length != 0){
+			nfiltros += 1;
+		}
+		if (tipos.Length != 0){
+			nfiltros += 1;
+		}
+		if (legendario){
+			nfiltros += 1;
+		}
+
+		List<Pokemon> pokemons = new List<Pokemon>();
+
+		if (nfiltros != 0){
+			string filtro = "";
+			string tmp = "";
+
+			if (nfiltros > 1){
+				filtro = "{ $and: [";
+			}
+			//legendarios
+			if (legendario){
+				filtro += " { is_legendary: 1 },";
+			}
+
+			//generaciones
+			if (generacion.Length != 0){
+				tmp = " { $or: [ ";
+				for (int i =0;i<generacion.Length;i++){
+					if (i==0){
+						tmp += " { generation: "+generacion[i]+" }";
+					}else{
+						tmp += ", { generation: "+generacion[i]+" }";
+					}
+				}
+				tmp += " ] } ";
+				filtro += tmp;
+			}
+
+			//tipos
+			if (tipos.Length != 0){
+				tmp = " { $or: [ ";
+				for (int i =0;i<tipos.Length;i++){
+					if (i==0){
+						tmp += " { $or: [ { type1: '"+tipos[i]+"' }, { type2: '"+tipos[i]+"' } ] } ";
+					}else{
+						tmp += ", { $or: [ { type1: '"+tipos[i]+"' }, { type2: '"+tipos[i]+"' } ] } ";
+					}
+				}
+				tmp += " ] } ";
+				filtro += tmp;
+			}
+			if (nfiltros > 1){
+				filtro += " ] } ";
+			}
+			Debug.Log(filtro);
+
+			AddPokemons(pokemons, SacarPokemons(pokemoncollection.Find(new QueryDocument(BsonDocument.Parse(filtro)))));
+		}else{
+			AddPokemons(pokemons, CogerPokemons());
+		}
+		
 		return pokemons;
 	}
 
@@ -128,6 +181,7 @@ public class ConexionMongoDB {
 		foreach (Pokemon p in toAdd){
 			if (!pokemons.Contains(p)){
 				pokemons.Add(p);
+				Debug.Log(p.ToString());
 			}
 		}
 	}
@@ -145,55 +199,5 @@ public class ConexionMongoDB {
 			document["japanese_name"].AsString
 		);
 		return p;
-	}
-
-	public static Pokemon BuscarPokemon(int pokedex_number){
-		Pokemon p = null;
-		foreach (BsonDocument document in pokemoncollection.Find(new QueryDocument("pokedex_number", pokedex_number))){
-			p = FormarPokemon(document);
-		}
-		return p;
-	}
-
-	public static List<Pokemon> BuscarPorTipos(string[] tipos){
-		List<Pokemon> pokemons = new List<Pokemon>();
-		string t = "Buscando por tipos primario o secundario:";
-		foreach (string tipo in tipos){
-			t+=" "+tipo;
-			AddPokemons(pokemons, SacarPokemons(pokemoncollection.Find(Query.Or(Query.EQ("type1", tipo), Query.EQ("type2", tipo)))));
-		}
-		Debug.Log(t);
-		return pokemons;
-	}
-
-	public static List<Pokemon> BuscarPorLegendario(){
-		Debug.Log("Buscando por legendarios");
-		return SacarPokemons(pokemoncollection.Find(new QueryDocument("is_legendary",1)));
-	}
-
-	public static List<Pokemon> BuscarPorLegendarioTipos(string[] tipos){
-		List<Pokemon> pokemons = new List<Pokemon>();
-		string t = "Buscando por Legendarios y tipos primario o secundario:";
-		foreach (string tipo in tipos){
-			t+=" "+tipo;
-			AddPokemons(pokemons, SacarPokemons(pokemoncollection.Find(Query.And(
-					Query.Or(Query.EQ("type1", tipo), Query.EQ("type2", tipo)),
-					Query.EQ("is_legendary",1)
-				)
-			)));
-		}
-		Debug.Log(t);
-		return pokemons;
-	}
-
-	public static List<Pokemon> BuscarPorGeneracion(int[] gen){
-		List<Pokemon> pokemons = new List<Pokemon>();
-		string t = "Buscando por generaciones:";
-		foreach (int n in gen){
-			t+=" "+n;
-			AddPokemons (pokemons, SacarPokemons(pokemoncollection.Find(new QueryDocument("generation",n))));
-		}
-		Debug.Log(t);
-		return pokemons;
 	}
 }

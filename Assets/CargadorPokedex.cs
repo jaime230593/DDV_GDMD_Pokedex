@@ -3,68 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class CargadorPokedex : MonoBehaviour {
 	public Text texto, place;
 	public string escena;
 
-	//1
-	//public int filtro = 0;
-	//2
 	public Toggle[] gen;
-	//3
 	public Toggle[] tipos;
-	//4
-	public Toggle legenPorTipos;
+	public Toggle legen;
 
-	//1
 	public void CargarEscenaFiltroTodos(){
-		GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().filtro = 1;
-		SceneManager.LoadScene(escena, LoadSceneMode.Single);
-	}
-	//2
-	public void CargarEscenaFiltroPorGeneracion(){
-		GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().filtro = 2;
-		List<int> temp = new List<int>();
+		Permanente p = GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>();
+
+		//generaciones
+		List<int> gens = new List<int>();
 		foreach (Toggle tmp in gen){
 			if (tmp.isOn){
-				temp.Add(int.Parse(tmp.transform.GetChild(1).GetComponent<Text>().text));
+				gens.Add(int.Parse(tmp.transform.GetChild(1).GetComponent<Text>().text));
 			}
 		}
-		GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().gen = temp.ToArray();
+		p.gen = gens.ToArray();
 
-		SceneManager.LoadScene(escena, LoadSceneMode.Single);
-	}
-	//3
-	public void CargarEscenaFiltroPorTipos(){
-		GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().filtro = 3;
-		List<string> temp = new List<string>();
+		//tipos
+		List<string> tips = new List<string>();
 		Debug.Log(tipos.Length);
 		foreach (Toggle tmp in tipos){
 			Debug.Log(tmp.transform.GetChild(1).GetComponent<Text>().text.ToLower());
 			if (tmp.isOn){
-				temp.Add(tmp.transform.GetChild(1).GetComponent<Text>().text.ToLower());
+				tips.Add(tmp.transform.GetChild(1).GetComponent<Text>().text.ToLower());
 			}
 		}
-		GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().tipos = temp.ToArray();
+		p.tipos = tips.ToArray();
+
+		//legendarios
+		p.legen = legen.isOn;
 
 		SceneManager.LoadScene(escena, LoadSceneMode.Single);
 	}
-	//4 legendarios
-	public void CargarEscenaFiltroPorLegendarios(){
-		GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().filtro = 4;
-		GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().legenPorTipos = legenPorTipos.isOn;
-		if (legenPorTipos.isOn){
-			List<string> temp = new List<string>();
-			foreach (Toggle tmp in tipos){
-				if (tmp.isOn){
-					temp.Add(tmp.transform.GetChild(1).GetComponent<Text>().text.ToLower());
-				}
-			}
-			GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().tipos = temp.ToArray();
-		}
-		
-		SceneManager.LoadScene(escena, LoadSceneMode.Single);
+
+	public void CargarImagenes(){
+		Text tmp = transform.GetChild(0).gameObject.GetComponent<Text>();
+		ConexionMongoDB.Conectar();
+		tmp.text = "Cargando imagenes";
+		ConexionMongoDB.CargarImagenesPokemon();
+		tmp.text = "Imagenes cargadas";
 	}
 
 	public void CargarEscena(){
@@ -72,67 +55,22 @@ public class CargadorPokedex : MonoBehaviour {
 	}
 
 	public void Cargar(){
-		if (texto.text != string.Empty){
+		if (File.Exists("user.xml")){
 			XMLPokedexDatos datosXML = XML.CargarXML();
 			List<User> datosGuardar = new List<User>();
 			User nuevo = null;
 
 			if (datosXML != null){
-				foreach (User u in datosXML.users){
-					datosGuardar.Add(u);
-					if (u.nombre.Equals(texto.text.ToLower())){
-						Debug.Log("Existe");
-						nuevo = u;
-					}
-				}
+				nuevo = datosXML.user;
+				Debug.Log("Existe");
+
+				GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().CargarUsuario(nuevo);
+				SceneManager.LoadScene(escena, LoadSceneMode.Single);
+			}else{
+				place.text = "No hay un nombre de usuario correcto o no hay archivo xml, mirar xml de ejemplo para ver su estructura y crearlo en la ubicacion del ejecutable";
 			}
-
-			if (nuevo == null){
-				nuevo = new User();
-				nuevo.nombre = texto.text.ToLower();
-				datosGuardar.Add(nuevo);
-			}
-
-			XMLPokedexDatos temp = new XMLPokedexDatos();
-			temp.users = datosGuardar.ToArray();
-			XML.GuardarXML(temp, XML.pathXML);
-
-			GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().CargarUsuario(nuevo);
-			SceneManager.LoadScene(escena, LoadSceneMode.Single);
 		}else{
-			place.text = "Debes usar un nombre de usuario...";
+			place.text = "No hay un nombre de usuario correcto o no hay archivo xml, mirar xml de ejemplo para ver su estructura y crearlo en la ubicacion del ejecutable";
 		}
 	}
-
-	public static void Cargar(string usuarioForzado){
-		if (usuarioForzado != string.Empty){
-			XMLPokedexDatos datosXML = XML.CargarXML();
-			List<User> datosGuardar = new List<User>();
-			User nuevo = null;
-
-			if (datosXML != null){
-				foreach (User u in datosXML.users){
-					datosGuardar.Add(u);
-					if (u.nombre.Equals(usuarioForzado.ToLower())){
-						Debug.Log("Existe");
-						nuevo = u;
-					}
-				}
-			}
-
-			if (nuevo == null){
-				nuevo = new User();
-				nuevo.nombre = usuarioForzado.ToLower();
-				datosGuardar.Add(nuevo);
-			}
-
-			XMLPokedexDatos temp = new XMLPokedexDatos();
-			temp.users = datosGuardar.ToArray();
-			XML.GuardarXML(temp, XML.pathXML);
-
-			GameObject.FindGameObjectWithTag("permanente").GetComponent<Permanente>().CargarUsuario(nuevo);
-		}
-	}
-
-
 }

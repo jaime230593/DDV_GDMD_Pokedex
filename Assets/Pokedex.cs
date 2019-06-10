@@ -6,13 +6,8 @@ using UnityEngine.UI;
 public class Pokedex : MonoBehaviour {
 	Permanente permanente;
 
-	//public int pokemonsACargar = 151;
-
 	public bool recargarImagenes = false;
-	//public Image imagen,imagen_mega,imagen_mega2;
-	//public Text texto,texto_mega1,texto_mega2;
 	public Text texto_usuario;
-	//public Pokemon pokemonCargado = null;
 	public GameObject prefabPokemon;
 	public GameObject gridPokemons;
 	public GameObject tamanioPokemon;
@@ -64,41 +59,8 @@ public class Pokedex : MonoBehaviour {
 	}
 
 	void CargarPokemonsEnLista(){
-		switch (permanente.filtro){
-			case 1:{
-				foreach (Pokemon p in ConexionMongoDB.CogerPokemons()){
-					CargarVistaPokemon(p);
-				}
-				break;
-			}
-
-			case 2:{
-				foreach (Pokemon p in ConexionMongoDB.BuscarPorGeneracion(permanente.gen)){
-					CargarVistaPokemon(p);
-				}
-				break;
-			}
-
-			case 3:{
-				foreach (Pokemon p in ConexionMongoDB.BuscarPorTipos(permanente.tipos)){
-					CargarVistaPokemon(p);
-				}
-				break;
-			}
-
-			case 4:{
-				if (permanente.legenPorTipos){
-					foreach (Pokemon p in ConexionMongoDB.BuscarPorLegendarioTipos(permanente.tipos)){
-						CargarVistaPokemon(p);
-					}
-				}else{
-					foreach (Pokemon p in ConexionMongoDB.BuscarPorLegendario()){
-						CargarVistaPokemon(p);
-					}
-				}
-				
-				break;
-			}
+		foreach (Pokemon p in ConexionMongoDB.CogerPokemons(permanente.gen, permanente.tipos, permanente.legen)){
+			CargarVistaPokemon(p);
 		}
 	}
 }

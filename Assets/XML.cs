@@ -3,9 +3,7 @@ using System.IO;
 using UnityEngine;
 
 public class XML {
-
-	//public static string pathXML = Path.Combine(Application.persistentDataPath, "users.xml");
-	public static string pathXML = "users.xml";
+	public static string pathXML = "user.xml";
 
 	public static void CrearXML(){
 		FileStream fs = new FileStream(pathXML, FileMode.Create);
@@ -14,25 +12,18 @@ public class XML {
     	//string text = File.ReadAllText(myfile);
 	}
 
-	//Guarda los objetos en el XML en el path indicado
-	public static void GuardarXML(object item, string path)
+	//Guarda los objetos en el XML en el path indicado (ya no se usa si se carga desde el xml directamente sin insertar usuario)
+	/*public static void GuardarXML(object item, string path)
 	{
 		XmlSerializer serializer = new XmlSerializer(item.GetType());
 		StreamWriter writer = new StreamWriter(path);
 		serializer.Serialize(writer.BaseStream, item);
 		writer.Close();
-	}
+	}*/
 
 	//Carga los datos del path indicado
 	public static XMLPokedexDatos CargarXML()
 	{
-		//Debug.Log(pathXML);
-		if (!File.Exists(pathXML)){
-			Debug.Log("No hay archivo xml, creando uno vacio");
-			CrearXML();
-			return null;
-		}
-
 		XmlSerializer serializer = new XmlSerializer(typeof(XMLPokedexDatos));
 		StreamReader reader = new StreamReader(pathXML);
 		XMLPokedexDatos deserialized = (XMLPokedexDatos)serializer.Deserialize(reader.BaseStream);

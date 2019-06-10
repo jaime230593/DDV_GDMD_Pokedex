@@ -14,24 +14,20 @@ public class Permanente : MonoBehaviour {
 	//3
 	public string[] tipos = {"grass"};
 	//4
-	public bool legenPorTipos = false;
+	public bool legen = false;
 
-	void Awake () {
-		if (GameObject.FindGameObjectWithTag("permanente") == null){
+	void Start () {
+		if (GameObject.FindGameObjectsWithTag("permanente").Length > 1){
 			Destroy(gameObject);
 		}else{
-			if (!main){
+			/*if (!main){
 				CargadorPokedex.Cargar("jaime");
-			}
+			}*/
 			DontDestroyOnLoad(gameObject);
 		}
 	}
 	
 	public void CargarUsuario(User u){
 		user = u;
-	}
-
-	public void ActualizarPokemonUsuario(Pokemon p){
-		user.pokemonACargar = p.numero.ToString();
 	}
 }
